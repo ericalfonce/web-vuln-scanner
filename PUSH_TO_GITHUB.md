@@ -76,19 +76,22 @@ git push -u origin iteration-3-owasp
 If you get "git is not recognized," ensure git is installed and available in your system PATH.
 
 **Install Git:**
-- Download from https://git-scm.com/download/win
+
+- Download from <https://git-scm.com/download/win>
 - During installation, select "Add Git to PATH"
 - Restart PowerShell after installation
 
 ### Authentication Errors
 
 **If using HTTPS:**
+
 ```powershell
 # Git will prompt for credentials; use your GitHub username and a personal access token
 # (not your password)
 ```
 
 **If using SSH:**
+
 ```powershell
 # Ensure your SSH key is added to your GitHub account
 ssh -T git@github.com  # Test SSH connection
@@ -97,6 +100,7 @@ ssh -T git@github.com  # Test SSH connection
 ### Branch Already Exists
 
 If the branch exists locally:
+
 ```powershell
 git branch -D iteration-3-owasp  # Delete the local branch
 git checkout -b iteration-3-owasp  # Recreate it
@@ -105,6 +109,7 @@ git checkout -b iteration-3-owasp  # Recreate it
 ### Changes Not Staged
 
 Ensure all changes are added:
+
 ```powershell
 git status  # View unstaged changes
 git add .   # Stage all
@@ -116,17 +121,20 @@ git commit -m "..."
 The following files are included in this commit:
 
 **New Scanners:**
+
 - `src/scanner/plugins/csrf_scanner.py`
 - `src/scanner/plugins/auth_flaws_scanner.py`
 - `src/scanner/plugins/insecure_deserialization_scanner.py`
 
 **New Tests:**
+
 - `tests/test_csrf_scanner.py`
 - `tests/test_auth_flaws_scanner.py`
 - `tests/test_insecure_deserialization_scanner.py`
 - `tests/test_url_fetching.py`
 
 **Documentation:**
+
 - `README.md` (updated with Iteration 3 section)
 - `ITERATION_3_SUMMARY.md`
 - `PR_DESCRIPTION.md`
@@ -134,4 +142,3 @@ The following files are included in this commit:
 ---
 
 **All 93 tests passing ✅ — Ready for review and merge.**
-

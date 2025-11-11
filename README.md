@@ -5,9 +5,10 @@ A modular web vulnerability scanner with Cloudflare-like protection features. Au
 ## ✨ Key Features
 
 ### Scanning & Detection
+
 - **Multi-plugin scanning engine**: Easily extensible architecture for custom vulnerability checks
 - **SQL Injection detection**: Pre-built SQL injection pattern detection
-- **Media & Link Analysis**: 
+- **Media & Link Analysis**:
   - Extracts and analyzes all links and media from web pages
   - Detects insecure protocols (http:// vs https://)
   - Identifies suspicious domains in a watchlist
@@ -22,17 +23,19 @@ A modular web vulnerability scanner with Cloudflare-like protection features. Au
 - **CLI Interface**: Command-line tools for automation and CI/CD integration
 
 ### Web Application Protection
+
 - **Security Headers**:
   - Content-Security-Policy (CSP)
   - X-Content-Type-Options (nosniff)
   - X-Frame-Options (DENY - clickjacking protection)
   - Referrer-Policy (no-referrer)
-  
+
 - **Rate Limiting**: Per-IP request throttling to prevent abuse
 - **IP Blocklist**: Dynamic blocking of suspicious clients
 - **Before/After Request Hooks**: Extensible protection middleware
 
 ### Configuration & Management ⭐ NEW
+
 - **Environment-based configuration** (Development/Production/Testing)
 - **Centralized settings management** for plugins, rate limits, security headers
 - **JSON/environment variable configuration** loading
@@ -41,25 +44,29 @@ A modular web vulnerability scanner with Cloudflare-like protection features. Au
 ## 📋 Installation
 
 ### Prerequisites
+
 - Python 3.8+
 - pip or conda
 
 ### Setup
 
 1. **Clone the repository**:
+
 ```bash
 git clone <repository-url>
 cd web-vuln-scanner
 ```
 
-2. **Create a virtual environment** (recommended):
+1. **Create a virtual environment** (recommended):
+
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # On Windows
 # or: source .venv/bin/activate  # On macOS/Linux
 ```
 
-3. **Install dependencies**:
+1. **Install dependencies**:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -76,6 +83,7 @@ python -m flask --app src.api.app:app run
 ### Scanning a Website
 
 **Via API** (POST request):
+
 ```bash
 curl -X POST http://localhost:5000/scan \
   -H "Content-Type: application/json" \
@@ -83,6 +91,7 @@ curl -X POST http://localhost:5000/scan \
 ```
 
 Response:
+
 ```json
 {
   "message": "Scan started",
@@ -93,6 +102,7 @@ Response:
 ```
 
 **Check scan results**:
+
 ```bash
 curl http://localhost:5000/scan/results/scan-id-123
 ```
@@ -103,9 +113,44 @@ curl http://localhost:5000/scan/results/scan-id-123
 python src/cli/cli.py --help
 ```
 
+## 🖥️ Web Dashboard (New!)
+
+- ✨ Modern, clean UI with real-time results
+- 🎨 Color-coded severity levels
+- 📊 Real-time vulnerability display
+- 📥 Export results as JSON
+
+### How to Use Dashboard
+
+1. Paste a URL (e.g., `https://example.com`) or HTML content
+2. Select which scanners to run
+3. Click "Start Scan"
+4. View real-time results with severity colors
+5. Export results as JSON
+
+**Start the server:**
+
+```bash
+python -m flask --app src.api.app:app run
+```
+
+**Open the dashboard:**
+
+```text
+http://localhost:5000
+```
+
+**Features:**
+
+- ✨ Modern, clean UI with real-time results
+- 🎯 Select scanners with checkboxes
+- 📊 View vulnerabilities with severity colors
+- 📥 Export results as JSON
+- 🔍 Easy debugging with browser developer console
+
 ## 📁 Project Structure
 
-```
+```text
 web-vuln-scanner/
 ├── src/
 │   ├── main.py                    # Entry point
@@ -121,7 +166,7 @@ web-vuln-scanner/
 │   │   ├── engine.py             # Scanning engine
 │   │   ├── plugins/
 │   │   │   ├── example_plugin.py
-│   │   │   └── media_link_scanner.py  # NEW: Link & media analysis
+│   │   │   └── media_link_scanner.py
 │   │   └── rules/
 │   │       └── sql_injection.py
 │   ├── models/
@@ -131,8 +176,8 @@ web-vuln-scanner/
 ├── tests/
 │   ├── test_core.py              # Scanner tests
 │   ├── test_engine.py            # Engine tests
-│   ├── test_media_link_scanner.py # NEW: Link scanner tests
-│   └── test_middleware.py        # NEW: Protection middleware tests
+│   ├── test_media_link_scanner.py # Link scanner tests
+│   └── test_middleware.py        # Protection middleware tests
 ├── requirements.txt              # Python dependencies
 ├── setup.cfg                     # Setup configuration
 ├── pyproject.toml               # Project metadata
@@ -172,7 +217,7 @@ class MyCustomScanner:
         return {"vulnerabilities": findings}
 ```
 
-2. Register the plugin in your scanning workflow:
+1. Register the plugin in your scanning workflow:
 
 ```python
 from src.scanner.engine import Engine
@@ -186,23 +231,27 @@ results = engine.run_scan("https://example.com")
 ## 🧪 Testing
 
 Run all tests:
+
 ```bash
 pytest tests/ -v
 ```
 
 Run specific test file:
+
 ```bash
 pytest tests/test_media_link_scanner.py -v
 ```
 
 Run with coverage:
+
 ```bash
 pytest tests/ --cov=src --cov-report=html
 ```
 
 ### Test Coverage
+
 - **4** Scanner & Engine tests
-- **8** Media/Link scanner plugin tests  
+- **8** Media/Link scanner plugin tests
 - **6** Protection middleware tests
 - **18 total tests** ✅ All passing
 
@@ -245,18 +294,22 @@ When you scan a website, the system:
 ## 🛡️ Protection Features
 
 ### Security Headers
+
 All API responses automatically include security headers:
+
 - Prevents MIME-type sniffing attacks
 - Protects against clickjacking (iframe injection)
 - Restricts resource loading with CSP
 - Controls referrer information leakage
 
 ### Rate Limiting
+
 - **Default**: 100 requests per 60 seconds per IP
 - **Configurable** in `src/api/middleware.py`
 - IPs exceeding limit are temporarily blocklisted
 
 ### IP Blocklist
+
 - Dynamic blocking of suspicious IPs
 - Can be extended for integration with IDS/IPS systems
 - Supports manual IP management
@@ -272,13 +325,16 @@ See [docs/architecture.md](docs/architecture.md) for a detailed breakdown of com
 - [ ] Signature-based malware detection
 - [ ] Integration with threat intelligence feeds
 - [ ] Concurrent/async scanning for improved performance
-- [ ] Web UI dashboard for scan visualization
 - [ ] Webhook notifications for scan completion
 - [ ] OWASP Top 10 vulnerability checks
 - [ ] API key-based authentication
 - [ ] Detailed remediation recommendations
 
-## 🤝 Contributing
+## 📝 License
+
+MIT License - see LICENSE file for details.
+
+## 👥 Contributing
 
 Contributions are welcome! Please:
 
@@ -289,55 +345,12 @@ Contributions are welcome! Please:
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## 📞 Support
 
 For issues, questions, or feature requests, please open an issue on GitHub.
 
 ---
 
-**Made with ❤️ for a more secure web**
-
-## Iteration 3 — OWASP Top 10 Scanners (Added)
-
-This release expands the scanner to include multiple OWASP Top 10 related checks as separate plugins. The new scanners are:
-
-- `CSRFScanner` — Detects missing CSRF tokens, AJAX requests without CSRF headers, unvalidated redirects, and GET-based state-changing forms.
-- `AuthenticationFlawsScanner` — Detects weak password handling, default credentials, password transmission over HTTP/GET, missing password confirmation fields, and session issues.
-- `InsecureDeserializationScanner` — Detects unsafe pickle/yaml/xml/json patterns, gadget-chain indicators (Java), and unsafe eval/exec usage.
-
-Usage examples
-
-Programmatic usage (scan a URL or HTML content):
-
-```python
-from src.scanner.plugins.csrf_scanner import CSRFScanner
-from src.scanner.plugins.auth_flaws_scanner import AuthenticationFlawsScanner
-from src.scanner.plugins.insecure_deserialization_scanner import InsecureDeserializationScanner
-
-cs = CSRFScanner()
-ascan = AuthenticationFlawsScanner()
-ids = InsecureDeserializationScanner()
-
-# Scan a URL (the scanner will fetch the page via src.utils.network.make_get_request)
-result = cs.scan("https://example.com")
-print(result)
-
-# Or scan HTML content directly
-html = '<form method="POST"><input type="hidden" name="csrf_token" value="x" /></form>'
-print(ascan.scan(html))
-
-# For deserialization checks use snippet or code strings
-code = 'pickle.loads(user_input)'
-print(ids.scan(code))
-```
-
-Notes
-
-- The scanners accept either a URL (string starting with `http://` or `https://`) or raw content (HTML or code snippet). When given a URL the scanner will call `src.utils.network.make_get_request(url)` to fetch content — tests include mocked network calls to validate this behavior.
-- Issue keys and severity levels follow the project's existing finding model: each finding is a dict with `url`, `issue`, `severity`, and optional `description` and `context`.
+Made with ❤️ for a more secure web
 
 See `ITERATION_3_SUMMARY.md` for an executive summary of the changes and test results.
