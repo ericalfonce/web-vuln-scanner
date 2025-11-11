@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Vulnerability Scanner - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🔒 Web Vulnerability Scanner</h1>
+                <p class="subtitle">Scan websites for security vulnerabilities</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="grid">
+                <!-- Scan Panel -->
+                <div class="panel scan-panel">
+                    <h2>Start a Scan</h2>
+                    
+                    <form id="scanForm" class="scan-form">
+                        <!-- URL Input -->
+                        <div class="form-group">
+                            <label for="targetUrl">Target URL or HTML Content</label>
+                            <input 
+                                type="text" 
+                                id="targetUrl" 
+                                name="target" 
+                                placeholder="https://example.com or paste HTML/code"
+                                required
+                            >
+                            <small>Enter a URL to scan or paste HTML/code snippet</small>
+                        </div>
+
+                        <!-- Scanner Selection -->
+                        <div class="form-group">
+                            <label>Select Scanners</label>
+                            <div class="scanner-checkboxes">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="scanners" value="media_link" checked>
+                                    <span class="scanner-name">Media & Links</span>
+                                    <span class="scanner-desc">Detects insecure links, broken URLs</span>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="scanners" value="xss" checked>
+                                    <span class="scanner-name">XSS Detection</span>
+                                    <span class="scanner-desc">Finds cross-site scripting vulnerabilities</span>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="scanners" value="csrf" checked>
+                                    <span class="scanner-name">CSRF Protection</span>
+                                    <span class="scanner-desc">Checks for CSRF token validation</span>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="scanners" value="auth">
+                                    <span class="scanner-name">Auth Flaws</span>
+                                    <span class="scanner-desc">Detects authentication weaknesses</span>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="scanners" value="deserialization">
+                                    <span class="scanner-name">Deserialization</span>
+                                    <span class="scanner-desc">Identifies unsafe deserialization</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" id="scanBtn">
+                            <span class="btn-text">Start Scan</span>
+                            <span class="spinner hidden"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="panel results-panel">
+                    <h2>Scan Results</h2>
+                    
+                    <div id="resultsContainer">
+                        <div class="empty-state">
+                            <p>👉 Start a scan to see results</p>
+                            <p class="small">Results will appear here</p>
+                        </div>
+                    </div>
+
+                    <!-- Export Button -->
+                    <div id="exportContainer" class="hidden">
+                        <button id="exportBtn" class="btn btn-secondary">
+                            📥 Export Results (JSON)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Statistics Footer -->
+        <footer class="footer">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Vulnerabilities Scanned</span>
+                    <span class="stat-value" id="scanCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Critical Issues</span>
+                    <span class="stat-value critical" id="criticalCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">High Severity</span>
+                    <span class="stat-value high" id="highCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Medium Severity</span>
+                    <span class="stat-value medium" id="mediumCount">0</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
