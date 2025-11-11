@@ -17,6 +17,8 @@ const resultsContainer = document.getElementById('resultsContainer');
 const exportContainer = document.getElementById('exportContainer');
 const exportBtn = document.getElementById('exportBtn');
 const notification = document.getElementById('notification');
+const authScanToggle = document.getElementById('authScanToggle');
+const authScanFields = document.getElementById('authScanFields');
 
 // Scanner mapping
 const scannerMap = {
@@ -33,7 +35,19 @@ const scannerMap = {
 function init() {
     scanForm.addEventListener('submit', handleScanSubmit);
     exportBtn.addEventListener('click', handleExport);
+    authScanToggle.addEventListener('change', toggleAuthFields);
     console.log('✅ Dashboard initialized');
+}
+
+/**
+ * Toggle auth scan fields visibility
+ */
+function toggleAuthFields(e) {
+    if (e.target.checked) {
+        authScanFields.classList.remove('hidden');
+    } else {
+        authScanFields.classList.add('hidden');
+    }
 }
 
 /**
@@ -48,7 +62,8 @@ async function handleScanSubmit(e) {
     }
 
     const target = document.getElementById('targetUrl').value.trim();
-    const selectedScanners = Array.from(document.querySelectorAll('input[name="scanners"]:checked'))
+    const useAuthScan = authScanToggle.checked;
+    const selectedScanners = useAuthScan ? [] : Array.from(document.querySelectorAll('input[name="scanners"]:checked'))
         .map(cb => scannerMap[cb.value]);
 
     if (!target) {
@@ -56,12 +71,25 @@ async function handleScanSubmit(e) {
         return;
     }
 
-    if (selectedScanners.length === 0) {
+    if (!useAuthScan && selectedScanners.length === 0) {
         showNotification('Please select at least one scanner', 'error');
         return;
     }
 
-    startScan(target, selectedScanners);
+    if (useAuthScan) {
+        const loginUrl = document.getElementById('loginUrl').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!loginUrl || !username || !password) {
+            showNotification('Please provide login URL, username, and password', 'error');
+            return;
+        }
+
+        startAuthenticatedScan(target, loginUrl, username, password);
+    } else {
+        startScan(target, selectedScanners);
+    }
 }
 
 /**
@@ -114,6 +142,70 @@ async function startScan(target, scanners) {
         showNotification(`Error: ${error.message}`, 'error');
     } finally {
         // Reset button state
+        state.isScanning = false;
+        scanBtn.disabled = false;
+        btnText.classList.remove('hidden');
+        spinner.classList.add('hidden');
+    }
+}
+
+/**
+ * Execute authenticated scan using Playwright backend
+ */
+async function startAuthenticatedScan(target, loginUrl, username, password) {
+    state.isScanning = true;
+    scanBtn.disabled = true;
+    
+    // Show loading state
+    const btnText = scanBtn.querySelector('.btn-text');
+    const spinner = scanBtn.querySelector('.spinner');
+    btnText.classList.add('hidden');
+    spinner.classList.remove('hidden');
+    
+    showNotification('🔐 Running authenticated headless scan...', 'info');
+    
+    try {
+        const response = await fetch('/scan/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                target: target,
+                login_url: loginUrl,
+                username: username,
+                password: password,
+                safe_mode: true
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('📊 Auth scan response:', data);
+
+        if (data.findings) {
+            displayResults(data.findings, target);
+            state.scanResults = data;
+            state.lastScanTime = new Date();
+            
+            // Show artifact links
+            if (data.artifacts && data.artifacts.screenshot) {
+                showNotification(`✅ Authenticated scan completed! Screenshot: ${data.artifacts.screenshot}`, 'success');
+            } else {
+                showNotification('✅ Authenticated scan completed!', 'success');
+            }
+        } else {
+            showNotification('❌ No results returned from server', 'error');
+        }
+
+    } catch (error) {
+        showNotification(`❌ Authenticated scan failed: ${error.message}`, 'error');
+        console.error('Authenticated scan error:', error);
+    } finally {
         state.isScanning = false;
         scanBtn.disabled = false;
         btnText.classList.remove('hidden');

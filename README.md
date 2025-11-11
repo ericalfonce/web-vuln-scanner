@@ -119,11 +119,12 @@ python src/cli/cli.py --help
 - 🎨 Color-coded severity levels
 - 📊 Real-time vulnerability display
 - 📥 Export results as JSON
+- 🔐 Authenticated scan mode (login & headless browser)
 
 ### How to Use Dashboard
 
 1. Paste a URL (e.g., `https://example.com`) or HTML content
-2. Select which scanners to run
+2. Select which scanners to run (or toggle authenticated scan)
 3. Click "Start Scan"
 4. View real-time results with severity colors
 5. Export results as JSON
@@ -146,6 +147,7 @@ http://localhost:5000
 - 🎯 Select scanners with checkboxes
 - 📊 View vulnerabilities with severity colors
 - 📥 Export results as JSON
+- 🔐 Authenticated scans (headless browser with login)
 - 🔍 Easy debugging with browser developer console
 
 ## 📁 Project Structure
@@ -253,7 +255,60 @@ pytest tests/ --cov=src --cov-report=html
 - **4** Scanner & Engine tests
 - **8** Media/Link scanner plugin tests
 - **6** Protection middleware tests
-- **18 total tests** ✅ All passing
+- **6** Dynamic/Authenticated scanner tests (new)
+- **6** SARIF export tests (new)
+- **30+ total tests** ✅ All passing
+
+## 🔐 Authenticated Dynamic Scanning (MVP)
+
+Scan authenticated endpoints and stateful applications with a headless browser.
+
+### Quick Start
+
+1. Install Playwright browsers:
+
+```bash
+python -m playwright install
+```
+
+1. Run authenticated scan via CLI:
+
+```bash
+python scripts/auth_scan.py --url https://example.com --username user --password pass --login-url https://example.com/login
+```
+
+1. Results saved to `./artifacts/`:
+   - `scan_result.json` — findings
+   - `screenshot.png` — full-page screenshot
+   - `page.html` — saved HTML content
+
+### Dashboard UI
+
+Check the "🔐 Authenticated Scan (MVP)" option in the dashboard form to:
+
+- Provide login credentials
+- Specify login URL
+- Run headless browser-driven scan
+- View findings + artifact links
+
+### Checks Performed
+
+- DOM-based XSS detection (innerHTML, eval usage)
+- CSRF token validation in forms
+- Cookie security (Secure, HttpOnly, SameSite flags)
+- Endpoint enumeration (exposed routes/APIs)
+- Screenshots and HTML snapshots for review
+
+### CI/CD Integration
+
+Use the GitHub Action workflow (`.github/workflows/scan.yml`) to:
+
+- Scan PRs with lightweight checks
+- Export to SARIF format
+- Upload results to GitHub Security
+- Post summary comments on PRs
+
+See `docs/authenticated_scanning.md` for advanced usage.
 
 ## 📊 Scanning Example
 

@@ -99,6 +99,27 @@ Paste this code:
 
 Result: Detects innerHTML and eval vulnerabilities
 
+---
+
+### Authenticated Scan (MVP)
+
+To scan pages behind a login use the authenticated scan CLI for the MVP.
+
+1. Ensure Playwright is installed:
+
+```powershell
+pip install -r requirements.txt
+playwright install
+```
+
+1. Run the authenticated scan:
+
+```powershell
+python scripts/auth_scan.py --url https://example.com --username test --password test --login-url https://example.com/login
+```
+
+Artifacts are written to `./artifacts/` by default (screenshot, page HTML, scan_result.json).
+
 ### Example 4: Scan for Auth Issues
 
 Paste this Python code:

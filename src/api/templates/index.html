@@ -73,6 +73,43 @@
                             </div>
                         </div>
 
+                        <!-- Authenticated Scan Toggle -->
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="authScanToggle" name="use_auth_scan">
+                                <span class="scanner-name">🔐 Authenticated Scan (MVP)</span>
+                                <span class="scanner-desc">Headless browser-driven scan with login</span>
+                            </label>
+                        </div>
+
+                        <!-- Auth Scan Credentials (hidden by default) -->
+                        <div id="authScanFields" class="form-group hidden">
+                            <label for="loginUrl">Login URL</label>
+                            <input 
+                                type="url" 
+                                id="loginUrl" 
+                                name="login_url" 
+                                placeholder="https://example.com/login"
+                            >
+
+                            <label for="username">Username</label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                placeholder="username"
+                            >
+
+                            <label for="password">Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="password (not persisted)"
+                            >
+                            <small style="color: #f0ad4e;">⚠️ Password is not stored and only used for this session</small>
+                        </div>
+
                         <!-- Submit Button -->
                         <button type="submit" class="btn btn-primary" id="scanBtn">
                             <span class="btn-text">Start Scan</span>
